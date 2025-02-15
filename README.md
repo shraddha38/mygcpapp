@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+## Why terraform?
+- Infrastructure as code
+- Easy to deploy, destroy, share and version control.
+- Easy to test and validate (with plan and apply commands)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Terraform has two components:
+- Terraform files (`.tf` files)
+- Terraform state (stored in `terraform.tfstate` file or in a remote state)
 
-## Available Scripts
+### Terraform files
+Terraform files are used to define the infrastructure.
+They are written in HCL (HashiCorp Configuration Language).
 
-In the project directory, you can run:
+### Terraform state
+Terraform state is a file that contains the current state of the infrastructure.
 
-### `npm start`
+### Install terraform
+- https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/install-cli
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Networking Basics
+- VPC
+- Subnets (public and private)
+- Internet Gateway (applied at the VPC level, allows public subnets to connect to the internet)
+- Security Groups (applied at the subnet level, allows to control the traffic that can enter and exit the subnet)
+- NAT Gateway (used to allow private subnets to connect to the internet)
+- Route Tables (applied at the subnet level, allows to control the traffic that can enter and exit the subnet)
+- DNS (Domain Name System, allows to resolve domain names to IP addresses)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## GCP
+- In GCP, you have to enable APIs to use any GCP service like VPC, IAM, etc.
+- GCP is a pay-as-you-go service, you pay for what you use.
+- GCP has a free tier for some services.
+- Internet Gateway routes 
 
-### `npm test`
+### Install gcloud CLI
+- https://cloud.google.com/sdk/docs/install
+```bash
+cd ~/Downloads
+tar -zxf google-cloud-cli-darwin-arm.tar.gz
+# should see a directory called google-cloud-sdk (ls)
+# move it to your home directory
+mv google-cloud-sdk ~/
+cd ~/google-cloud-sdk
+./install.sh
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Initialize gcloud CLI
+```bash
+gcloud init
+gcloud auth application-default login
+# select the project you want to use, no need to accept default configuration
+```
 
-### `npm run build`
+## Deploying the infrastructure
+- `terraform init` to initialize the terraform files
+- Run `terraform plan` to plan the changes, it may fail because of missing credentials, run `gcloud auth application-default login` to authenticate with GCP
+- Run `terraform apply` to apply the changes
+- Run `terraform destroy` to destroy the infrastructure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Project pipeline
+Internet → Global Forwarding Rule → HTTP Proxy → URL Map → Backend Bucket (with CDN) → Cloud Storage Bucket
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Relevant links
+- [Cloud Storage Bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#argument-reference)
